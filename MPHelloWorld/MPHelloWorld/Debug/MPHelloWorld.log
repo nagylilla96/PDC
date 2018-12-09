@@ -1,0 +1,9 @@
+﻿C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\V140\Microsoft.CppBuild.targets(392,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (MPHelloWorld.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  stdafx.cpp
+  Histogram.cpp
+  Cannon.cpp
+c:\users\lilla\documents\visual studio 2015\projects\pdc\mphelloworld\mphelloworld\cannon.cpp(108): warning C4101: 'Bcast_root': unreferenced local variable
+c:\users\lilla\documents\visual studio 2015\projects\pdc\mphelloworld\mphelloworld\cannon.cpp(111): warning C4101: 'Temp_BufferA': unreferenced local variable
+  Generating Code...
+Histogram.obj : error LNK2005: _main already defined in Cannon.obj
+C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\MPHelloWorld\Debug\Histogram.exe : fatal error LNK1169: one or more multiply defined symbols found

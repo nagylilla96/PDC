@@ -1,0 +1,9 @@
+﻿  Cannon.cpp
+c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(257): warning C4474: 'printf' : too many arguments passed for format string
+  c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(257): note: placeholders and their parameters expect 0 variadic arguments, but 3 were provided
+c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(261): warning C4474: 'printf' : too many arguments passed for format string
+  c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(261): note: placeholders and their parameters expect 0 variadic arguments, but 3 were provided
+c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(265): warning C4474: 'printf' : too many arguments passed for format string
+  c:\users\lilla\documents\visual studio 2015\projects\pdc\cannon\cannon\cannon.cpp(265): note: placeholders and their parameters expect 0 variadic arguments, but 3 were provided
+  Cannon.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Cannon\Debug\Cannon.exe
+  Cannon.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Cannon\Debug\Cannon.pdb (Full PDB)

@@ -1,0 +1,4 @@
+﻿  ScatterGather.cpp
+c:\users\lilla\documents\visual studio 2015\projects\pdc\scattergather\scattergather\scattergather.cpp(44): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  ScatterGather.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\ScatterGather\Debug\ScatterGather.exe
+  ScatterGather.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\ScatterGather\Debug\ScatterGather.pdb (Full PDB)
