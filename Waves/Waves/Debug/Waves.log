@@ -1,9 +1,7 @@
 ﻿  waves.cpp
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(6): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(11): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(122): warning C4101: 'end': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(124): warning C4101: 'matrix': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(122): warning C4101: 'start': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(123): warning C4101: 'time': unreferenced local variable
-  Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.exe
-  Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.pdb (Full PDB)
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(8): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(9): warning C4305: 'initializing': truncation from 'int' to 'float'
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(20): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(65): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(69): error C2664: 'LONG _InterlockedAdd(volatile LONG *,LONG)': cannot convert argument 1 from 'float *' to 'volatile LONG *'
+  c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(69): note: Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or function-style cast

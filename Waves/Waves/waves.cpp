@@ -1,8 +1,18 @@
 #include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
+#include <windows.h>
 using namespace std;
 
 float threshold = 0.0001;
+float diff = INT_MAX;
+
+typedef struct in_data
+{
+	int rows, cols;
+	float **matrix;
+}IN_DATA, *PIN_DATA;
 
 float **initialize(int n)
 {
@@ -30,38 +40,87 @@ float **initialize(int n)
 	return matrix;
 }
 
-void solve(int n, float **matrix)
+void printMat(int rows, int cols, float **mat)
 {
-	int done = 0;
-	while (!done)
+	for (int i = 0; i < rows; i++)
 	{
-		float diff = 0;
-		for (int i = 1; i < n + 1; i++)
+		for (int j = 0; j < cols; j++)
 		{
-			for (int j = 1; j < n + 1; j++)
-			{
-				float temp = matrix[i][j];
-				matrix[i][j] = 0.2 * (matrix[i][j] + matrix[i][j - 1] + matrix[i - 1][j] +
-					matrix[i][j + 1] + matrix[i + 1][j]);
-				diff += abs(matrix[i][j] - temp);
-			}
+			printf("%f ", mat[i][j]);
 		}
-		if (diff / (n * n) < threshold) done = 1;
+		printf("\n");
 	}
+}
 
+void solve(PIN_DATA inData)
+{
+	printMat(inData->rows, inData->cols, inData->matrix);
+	float myDiff = 0;
+	for (int i = 1; i < inData->rows + 1; i++)
+	{
+		for (int j = 1; j < inData->cols + 1; j++)
+		{
+			float temp = inData->matrix[i][j];
+			inData->matrix[i][j] = 0.2 * (inData->matrix[i][j] + inData->matrix[i][j - 1] + inData->matrix[i - 1][j] +
+				inData->matrix[i][j + 1] + inData->matrix[i + 1][j]);
+			diff += abs(inData->matrix[i][j] - temp);
+		}
+	}
+	diff += myDiff;
 }
 
 int main(int argc, char** argv)
 {
-	int n = 100;
+	int n, p, sub;
 	clock_t start, end;
+	PIN_DATA inData = (PIN_DATA)malloc(sizeof(IN_DATA));
 	float time;
 	float **matrix;
+	int done = 0;
+
+	if (argc != 3)
+	{
+		printf("Usage: waves.exe <nr_of_processes> <size_of_matrix>\n");
+		return -1;
+	}
+
+	n = atoi(argv[2]);
+	p = atoi(argv[1]);
+
+	if (n % p != 0)
+	{
+		printf("%d is not divisible by %d\n", n, p);
+		return -1;
+	}
+
+	sub = n / p;
 
 	matrix = initialize(n);
 
+	inData->rows = sub;
+	inData->cols = n;
+
 	start = clock();
-	solve(n, matrix);
+	while (!done)
+	{
+		diff = 0;
+		for (int i = 0; i < p; i++)
+		{
+			float **submat = (float**)malloc(sizeof(float*) * (sub + 2));
+			for (int j = 0; j < sub + 2; j++)
+			{
+				submat[j] = (float*)malloc(sizeof(float) * (n + 2));
+				submat[j] = matrix[i * sub + j];
+			}
+
+			printf("Sending matrix to process %d:\n", i);
+			printMat(sub + 2, n + 2, submat);
+
+			inData->matrix = submat;
+			solve(inData);
+		}
+		if (diff / (n * n) < threshold) done = 1;
+	}
 	end = clock();
 
 	time = ((float)end - start) / CLOCKS_PER_SEC;
