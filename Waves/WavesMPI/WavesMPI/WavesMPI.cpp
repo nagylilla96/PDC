@@ -6,6 +6,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cmath>
 #include <time.h>
 using namespace std;
 
@@ -138,24 +139,26 @@ int main(int argc, char** argv)
 				mydiff += abs(submat[i][j] - temp);
 			}
 		}
+		MPI_Barrier(MPI_COMM_WORLD);
+
 		if (rank != 0)
 		{
 			printf("Sending mydiff = %f from %d to %d\n", mydiff, rank, 0);
-			MPI_Send(&mydiff, 1, MPI_FLOAT, 0, 0, MPI_COMM_WORLD);
-			MPI_Recv(&done, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+			MPI_Send(&mydiff, 1, MPI_FLOAT, 0, 2, MPI_COMM_WORLD);
+			MPI_Recv(&mydiff, 1, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 		else
 		{
 			for (int i = 1; i < p; i++)
 			{
 				printf("Process 0 is waiting for tempdiff from %d\n", i);
-				MPI_Recv(&tempdiff, 1, MPI_FLOAT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				MPI_Recv(&tempdiff, 1, MPI_FLOAT, i, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 				mydiff += tempdiff;
 			}
 			for (int i = 1; i < p; i++)
 			{
-				printf("Sending done = %d from %d to %d\n", done, rank, i);
-				MPI_Send(&done, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
+				printf("Sending mydiff = %f from %d to %d\n", mydiff, rank, i);
+				MPI_Send(&mydiff, 1, MPI_FLOAT, i, 1, MPI_COMM_WORLD);
 			}
 		}
 		if (mydiff / (n * n) < threshold) done = 1;
