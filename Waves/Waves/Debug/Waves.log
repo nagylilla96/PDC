@@ -1,7 +1,7 @@
 ﻿  waves.cpp
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(12): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(13): warning C4305: 'initializing': truncation from 'int' to 'float'
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(25): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(71): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(13): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(14): warning C4305: 'initializing': truncation from 'int' to 'float'
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(26): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(72): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.exe
   Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.pdb (Full PDB)

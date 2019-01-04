@@ -8,60 +8,25 @@
 #include <stdlib.h>
 #include <cmath>
 #include <time.h>
+#include <fstream>
 using namespace std;
 
 #define THREADS 100000
 
 float threshold = (float) 0.0001;
-float diff = (float) INT_MAX;
-
-typedef struct in_data
-{
-	int rows, cols;
-	float **matrix;
-}IN_DATA, *PIN_DATA;
-
-float **initialize(int n)
-{
-	int x, y;
-	srand(time(NULL));
-
-	float ** matrix = (float**)malloc((n + 2) * sizeof(float*));
-	for (int i = 0; i < n + 2; i++)
-	{
-		matrix[i] = (float*)malloc((n * 2) * sizeof(float));
-	}
-	for (int i = 0; i < n + 2; i++)
-	{
-		for (int j = 0; j < n + 2; j++)
-		{
-			matrix[i][j] = 1;
-		}
-	}
-
-	x = rand() % (n + 1) + 1;
-	y = rand() % (n + 1) + 1;
-
-	matrix[x][y] = 5;
-
-	return matrix;
-}
 
 void printMat(int rows, int cols, float **mat)
 {
+	ofstream file;
+	file.open("matrix.csv", ios::app);
 	for (int i = 1; i <= rows; i++)
 	{
 		for (int j = 1; j <= cols; j++)
 		{
-			printf("%f ", mat[i][j]);
+			file << mat[i][j] << ",";
 		}
-		printf("\n");
+		file << endl;
 	}
-}
-
-void solve(PIN_DATA inData)
-{
-
 }
 
 int main(int argc, char** argv)
@@ -106,27 +71,25 @@ int main(int argc, char** argv)
 	start = clock();
 	while (!done)
 	{
-		cout << "Started" << rank << endl;
-
 		mydiff = 0;
 		if (rank != 0)
 		{
-			printf("Sending %s from %d to %d\n", "[1][0]", rank, rank - 1);
+			//printf("Sending %s from %d to %d\n", "[1][0]", rank, rank - 1);
 			MPI_Send(&submat[1][0], n + 2, MPI_FLOAT, rank - 1, 0, MPI_COMM_WORLD);
 		}
 		if (rank != p - 1)
 		{
-			printf("Sending [%d][%d] from %d to %d\n", sub, 0, rank, rank + 1);
+			//printf("Sending [%d][%d] from %d to %d\n", sub, 0, rank, rank + 1);
 			MPI_Send(&submat[sub][0], n + 2, MPI_FLOAT, rank + 1, 0, MPI_COMM_WORLD);
 		}
 		if (rank != 0)
 		{
-			printf("Sending [%d][%d] from %d to %d\n", 0, 0, rank, rank - 1);
+			//printf("Sending [%d][%d] from %d to %d\n", 0, 0, rank, rank - 1);
 			MPI_Recv(&submat[0][0], n + 2, MPI_FLOAT, rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 		if (rank != p - 1)
 		{
-			printf("Sending [%d][%d] from %d to %d\n", sub + 1, 0, rank, rank + 1);
+			//printf("Sending [%d][%d] from %d to %d\n", sub + 1, 0, rank, rank + 1);
 			MPI_Recv(&submat[sub + 1][0], n + 2, MPI_FLOAT, rank + 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
 		for (int i = 1; i < sub + 1; i++)
@@ -134,16 +97,14 @@ int main(int argc, char** argv)
 			for (int j = 1; j < n + 1; j++)
 			{
 				float temp = submat[i][j];
-				submat[i][j] = (float) 0.2 * (submat[i][j] + submat[i][j - 1] + submat[i - 1][j] +
-					submat[i][j + 1] + submat[i + 1][j]);
-				mydiff += abs(submat[i][j] - temp);
+				submat[i][j] = (float) (0.2 * (submat[i][j] + submat[i][j - 1] + submat[i - 1][j] +
+					submat[i][j + 1] + submat[i + 1][j]));
+				mydiff += (float) abs(submat[i][j] - temp);
 			}
 		}
-		MPI_Barrier(MPI_COMM_WORLD);
-
 		if (rank != 0)
 		{
-			printf("Sending mydiff = %f from %d to %d\n", mydiff, rank, 0);
+			//printf("Sending mydiff = %f from %d to %d\n", mydiff, rank, 0);
 			MPI_Send(&mydiff, 1, MPI_FLOAT, 0, 2, MPI_COMM_WORLD);
 			MPI_Recv(&mydiff, 1, MPI_FLOAT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 		}
@@ -151,24 +112,33 @@ int main(int argc, char** argv)
 		{
 			for (int i = 1; i < p; i++)
 			{
-				printf("Process 0 is waiting for tempdiff from %d\n", i);
+				//printf("Process 0 is waiting for tempdiff from %d\n", i);
 				MPI_Recv(&tempdiff, 1, MPI_FLOAT, i, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+				//printf("Tempdiff is[%d]: %f\n", rank,  tempdiff);
 				mydiff += tempdiff;
 			}
 			for (int i = 1; i < p; i++)
 			{
-				printf("Sending mydiff = %f from %d to %d\n", mydiff, rank, i);
 				MPI_Send(&mydiff, 1, MPI_FLOAT, i, 1, MPI_COMM_WORLD);
 			}
 		}
-		if (mydiff / (n * n) < threshold) done = 1;
+		MPI_Barrier(MPI_COMM_WORLD);
+		if ((float)(mydiff / (n * n)) < threshold) {
+			done = 1;
+			//printf("Mydiff is[%d]: %f\n", rank, mydiff);
+		}
+		MPI_Bcast(&done, 1, MPI_INT, 0, MPI_COMM_WORLD);
+		MPI_Barrier(MPI_COMM_WORLD);
 	}
 	end = clock();
 
 	time = ((float)end - start) / CLOCKS_PER_SEC;
-
-	printf("Matrix solved in %f s!\n", time);
-	printMat(n, n, submat);
+	if (rank == 0)
+	{
+		ofstream file;
+		file.open("mpiresults.txt", ios::app);
+		file << time << endl;
+	}
 
 	MPI_Finalize();
 

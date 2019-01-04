@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <thread>
 #include <mutex>
+#include <fstream>
 using namespace std;
 
 #define THREADS 100000
@@ -135,10 +136,9 @@ int main(int argc, char** argv)
 
 	time = ((float)end - start) / CLOCKS_PER_SEC;
 
-	printf("Matrix solved in %f s!\n", time);
-	printMat(n, n, matrix);
-
-	getchar();
+	/*ofstream file;
+	file.open("threadresults.txt", ios::app);*/
+	cout << time << endl;
 
 	return 0;
 }
