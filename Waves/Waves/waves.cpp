@@ -3,10 +3,15 @@
 #include <stdlib.h>
 #include <time.h>
 #include <windows.h>
+#include <thread>
+#include <mutex>
 using namespace std;
+
+#define THREADS 100000
 
 float threshold = 0.0001;
 float diff = INT_MAX;
+std::mutex mtx;
 
 typedef struct in_data
 {
@@ -42,9 +47,9 @@ float **initialize(int n)
 
 void printMat(int rows, int cols, float **mat)
 {
-	for (int i = 0; i < rows; i++)
+	for (int i = 1; i <= rows; i++)
 	{
-		for (int j = 0; j < cols; j++)
+		for (int j = 1; j <= cols; j++)
 		{
 			printf("%f ", mat[i][j]);
 		}
@@ -54,19 +59,23 @@ void printMat(int rows, int cols, float **mat)
 
 void solve(PIN_DATA inData)
 {
-	printMat(inData->rows, inData->cols, inData->matrix);
 	float myDiff = 0;
+	//printMat(inData->rows, inData->cols, inData->matrix);
 	for (int i = 1; i < inData->rows + 1; i++)
 	{
 		for (int j = 1; j < inData->cols + 1; j++)
 		{
+			mtx.lock();
 			float temp = inData->matrix[i][j];
 			inData->matrix[i][j] = 0.2 * (inData->matrix[i][j] + inData->matrix[i][j - 1] + inData->matrix[i - 1][j] +
 				inData->matrix[i][j + 1] + inData->matrix[i + 1][j]);
 			diff += abs(inData->matrix[i][j] - temp);
+			mtx.unlock();
 		}
 	}
+	mtx.lock();
 	diff += myDiff;
+	mtx.unlock();
 }
 
 int main(int argc, char** argv)
@@ -86,6 +95,7 @@ int main(int argc, char** argv)
 
 	n = atoi(argv[2]);
 	p = atoi(argv[1]);
+	std::thread ths[THREADS];
 
 	if (n % p != 0)
 	{
@@ -112,12 +122,12 @@ int main(int argc, char** argv)
 				submat[j] = (float*)malloc(sizeof(float) * (n + 2));
 				submat[j] = matrix[i * sub + j];
 			}
-
-			printf("Sending matrix to process %d:\n", i);
-			printMat(sub + 2, n + 2, submat);
-
 			inData->matrix = submat;
-			solve(inData);
+			ths[i] = std::thread(solve, inData);
+		}
+		for (int i = 0; i < p; i++)
+		{
+			ths[i].join();
 		}
 		if (diff / (n * n) < threshold) done = 1;
 	}
@@ -126,6 +136,7 @@ int main(int argc, char** argv)
 	time = ((float)end - start) / CLOCKS_PER_SEC;
 
 	printf("Matrix solved in %f s!\n", time);
+	printMat(n, n, matrix);
 
 	getchar();
 
