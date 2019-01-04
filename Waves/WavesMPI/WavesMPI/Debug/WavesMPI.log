@@ -1,0 +1,4 @@
+﻿  WavesMPI.cpp
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\wavesmpi\wavesmpi\wavesmpi.cpp(26): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  WavesMPI.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\WavesMPI\Debug\WavesMPI.exe
+  WavesMPI.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\WavesMPI\Debug\WavesMPI.pdb (Full PDB)
