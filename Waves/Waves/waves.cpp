@@ -36,7 +36,7 @@ float **initialize(int n)
 	{
 		for (int j = 0; j < n + 2; j++)
 		{
-			matrix[i][j] = rand() % 100;
+			matrix[i][j] = rand() % 5;
 		}
 	}
 
