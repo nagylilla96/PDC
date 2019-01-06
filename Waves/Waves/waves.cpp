@@ -34,14 +34,9 @@ float **initialize(int n)
 	{
 		for (int j = 0; j < n + 2; j++)
 		{
-			matrix[i][j] = 1;
+			matrix[i][j] = rand() % 5;
 		}
 	}
-
-	x = rand() % (n + 1) + 1;
-	y = rand() % (n + 1) + 1;
-
-	matrix[x][y] = 5;
 
 	return matrix;
 }
@@ -96,7 +91,6 @@ int main(int argc, char** argv)
 
 	n = atoi(argv[2]);
 	p = atoi(argv[1]);
-	std::thread ths[THREADS];
 
 	if (n % p != 0)
 	{
@@ -114,6 +108,8 @@ int main(int argc, char** argv)
 	start = clock();
 	while (!done)
 	{
+		std::thread ths[THREADS];
+
 		diff = 0;
 		for (int i = 0; i < p; i++)
 		{
@@ -136,9 +132,9 @@ int main(int argc, char** argv)
 
 	time = ((float)end - start) / CLOCKS_PER_SEC;
 
-	/*ofstream file;
-	file.open("threadresults.txt", ios::app);*/
-	cout << time << endl;
+	ofstream file;
+	file.open("threadresults.txt", ios::app);
+	file << time << endl;
 
 	return 0;
 }
