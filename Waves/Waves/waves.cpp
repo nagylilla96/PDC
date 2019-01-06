@@ -10,19 +10,21 @@ using namespace std;
 
 #define THREADS 100000
 
-float threshold = 0.0001;
-float diff = INT_MAX;
+float threshold = 1.0 / 1000;
+float diff = 0;
+int p, n;
+float **matrix;
 std::mutex mtx;
+LPSYNCHRONIZATION_BARRIER lpBarrier;
 
 typedef struct in_data
 {
-	int rows, cols;
+	int pid;
 	float **matrix;
 }IN_DATA, *PIN_DATA;
 
 float **initialize(int n)
 {
-	int x, y;
 	srand(time(NULL));
 
 	float ** matrix = (float**)malloc((n + 2) * sizeof(float*));
@@ -34,7 +36,7 @@ float **initialize(int n)
 	{
 		for (int j = 0; j < n + 2; j++)
 		{
-			matrix[i][j] = rand() % 5;
+			matrix[i][j] = rand() % 100;
 		}
 	}
 
@@ -53,35 +55,44 @@ void printMat(int rows, int cols, float **mat)
 	}
 }
 
-void solve(PIN_DATA inData)
+void solve(int pid)
 {
-	float myDiff = 0;
-	//printMat(inData->rows, inData->cols, inData->matrix);
-	for (int i = 1; i < inData->rows + 1; i++)
+	int done = 0;
+	int sub = n / p;
+	float temp, mydiff = 0;
+	int mymin = 1 + (pid * (n / p));
+	int mymax = mymin + (n / p) - 1;
+
+	while (!done)
 	{
-		for (int j = 1; j < inData->cols + 1; j++)
+		mydiff = diff = 0;
+		for (int i = mymin; i <= mymax; i++)
 		{
-			mtx.lock();
-			float temp = inData->matrix[i][j];
-			inData->matrix[i][j] = 0.2 * (inData->matrix[i][j] + inData->matrix[i][j - 1] + inData->matrix[i - 1][j] +
-				inData->matrix[i][j + 1] + inData->matrix[i + 1][j]);
-			diff += abs(inData->matrix[i][j] - temp);
-			mtx.unlock();
+			for (int j = 1; j <= n; j++)
+			{
+				temp = matrix[i][j];
+				matrix[i][j] = 0.2 * (matrix[i][j] + matrix[i][j - 1] + matrix[i - 1][j] +
+					matrix[i][j + 1] + matrix[i + 1][j]);
+				mydiff += abs(matrix[i][j] - temp);
+			}
 		}
+		mtx.lock();
+		diff += mydiff;
+		mtx.unlock();
+		EnterSynchronizationBarrier(lpBarrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY);
+		if (diff / (n * n) < threshold) done = 1;
+		EnterSynchronizationBarrier(lpBarrier, SYNCHRONIZATION_BARRIER_FLAGS_BLOCK_ONLY);
 	}
-	mtx.lock();
-	diff += myDiff;
-	mtx.unlock();
 }
 
 int main(int argc, char** argv)
 {
-	int n, p, sub;
 	clock_t start, end;
-	PIN_DATA inData = (PIN_DATA)malloc(sizeof(IN_DATA));
 	float time;
-	float **matrix;
 	int done = 0;
+	std::thread ths[THREADS];
+
+	InitializeSynchronizationBarrier(lpBarrier, p, -1);
 
 	if (argc != 3)
 	{
@@ -98,43 +109,26 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	sub = n / p;
-
 	matrix = initialize(n);
 
-	inData->rows = sub;
-	inData->cols = n;
-
 	start = clock();
-	while (!done)
+	for (int i = 0; i < p; i++)
 	{
-		std::thread ths[THREADS];
-
-		diff = 0;
-		for (int i = 0; i < p; i++)
-		{
-			float **submat = (float**)malloc(sizeof(float*) * (sub + 2));
-			for (int j = 0; j < sub + 2; j++)
-			{
-				submat[j] = (float*)malloc(sizeof(float) * (n + 2));
-				submat[j] = matrix[i * sub + j];
-			}
-			inData->matrix = submat;
-			ths[i] = std::thread(solve, inData);
-		}
-		for (int i = 0; i < p; i++)
-		{
-			ths[i].join();
-		}
-		if (diff / (n * n) < threshold) done = 1;
+		ths[i] = std::thread(solve, i);
+	}
+	for (int i = 0; i < p; i++)
+	{
+		ths[i].join();
 	}
 	end = clock();
 
 	time = ((float)end - start) / CLOCKS_PER_SEC;
 
 	ofstream file;
-	file.open("threadresults.txt", ios::app);
-	file << time << endl;
+	printMat(n, n, matrix);
+	/*file.open("threadresults.txt", ios::app);
+	file << time << endl;*/
 
+	getchar();
 	return 0;
 }

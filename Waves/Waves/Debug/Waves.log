@@ -1,10 +1,7 @@
 ﻿  waves.cpp
 c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(13): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(14): warning C4305: 'initializing': truncation from 'int' to 'float'
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(26): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(37): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(25): warning C4101: 'y': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(25): warning C4101: 'x': unreferenced local variable
-c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(67): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(28): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(39): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\lilla\documents\visual studio 2015\projects\pdc\waves\waves\waves.cpp(75): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.exe
   Waves.vcxproj -> C:\Users\Lilla\Documents\Visual Studio 2015\Projects\PDC\Waves\Debug\Waves.pdb (Full PDB)
